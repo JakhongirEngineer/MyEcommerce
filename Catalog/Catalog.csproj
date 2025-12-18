@@ -15,10 +15,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="Commands\" />
-      <Folder Include="Controllers\" />
-      <Folder Include="Handlers\" />
-      <Folder Include="Queries\" />
+      <Folder Include="Requests\" />
     </ItemGroup>
 
 </Project>

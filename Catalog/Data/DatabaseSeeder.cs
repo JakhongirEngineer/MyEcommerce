@@ -6,8 +6,6 @@ namespace Catalog.Data;
 
 public class DatabaseSeeder
 {
-    
-    
     public static async Task SeedAsync(IConfiguration configuration)
     {
         var client = new MongoClient(configuration["DatabaseSettings:ConnectionString"]);
