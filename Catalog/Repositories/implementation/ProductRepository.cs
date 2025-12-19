@@ -52,6 +52,7 @@ public class ProductRepository : IProductRepository
             .Find(filter)
             .Sort( catalogSpecParams.Sort switch
             {
+                "priceAsc" => Builders<Product>.Sort.Ascending(product => product.Price),
                 "priceDesc" => Builders<Product>.Sort.Descending(product => product.Price),
                 _ => Builders<Product>.Sort.Ascending(product => product.Name),
             })
@@ -96,7 +97,7 @@ public class ProductRepository : IProductRepository
         return replacedResult.IsAcknowledged && replacedResult.ModifiedCount > 0;
     }
 
-    public async Task<bool> DeleteProductByIdAsync(string productId)
+    public async Task<bool> DeleteProductAsync(string productId)
     {
         var deleteResult = await _products.DeleteOneAsync(product => product.Id == productId);
         return deleteResult.IsAcknowledged && deleteResult.DeletedCount > 0;

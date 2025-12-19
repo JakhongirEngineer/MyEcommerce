@@ -21,5 +21,5 @@ public interface IProductRepository
     
     Task<bool> UpdateProductAsync(Product product);
     
-    Task<bool>  DeleteProductByIdAsync(string productId);
+    Task<bool>  DeleteProductAsync(string productId);
 }
