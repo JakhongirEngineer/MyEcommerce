@@ -11,7 +11,7 @@ public class ProductTypeRepository : IProductTypeRepository
     {
         var client = new MongoClient(configuration["DatabaseSettings:ConnectionString"]);
         var db = client.GetDatabase(configuration["DatabaseSettings:DatabaseName"]);
-        _productTypes = db.GetCollection<ProductType>(configuration["DatabaseSettings:TypeCollectionName"]);
+        _productTypes = db.GetCollection<ProductType>(configuration["DatabaseSettings:ProductTypeCollectionName"]);
     }
     public async Task<IEnumerable<ProductType>> GetProductTypesAsync()
     {

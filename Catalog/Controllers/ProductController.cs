@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Catalog.Controllers;
 
 [ApiController]
-[Route("api/v1/[controller]")]
+[Route("api/v1/products")]
 public class ProductController : ControllerBase
 {
     private readonly IMediator _mediator;
@@ -71,8 +71,8 @@ public class ProductController : ControllerBase
         return Ok(dto);
     }
 
-    [HttpGet]
-    public async Task<ActionResult<IList<ProductDto>>> GetProductsByBrandNameAsync([FromQuery] string brandName)
+    [HttpGet("brand-name/{brandName}")]
+    public async Task<ActionResult<IList<ProductDto>>> GetProductsByBrandNameAsync([FromRoute] string brandName)
     {
         var query = new GetProductsByBrandQuery(ProductBrandName: brandName);
         var res = await _mediator.Send(query);
@@ -80,8 +80,8 @@ public class ProductController : ControllerBase
         return Ok(dtos);
     }
 
-    [HttpGet]
-    public async Task<ActionResult<IList<ProductDto>>> GetProductsByNameAsync([FromQuery] string name)
+    [HttpGet("name/{name}")]
+    public async Task<ActionResult<IList<ProductDto>>> GetProductsByNameAsync([FromRoute] string name)
     {
         var query = new GetProductsByNameQuery(Name: name);
         var res = await _mediator.Send(query);

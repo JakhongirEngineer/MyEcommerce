@@ -41,24 +41,35 @@ public class ProductRepository : IProductRepository
         }
         
         var totalCount = await _products.CountDocumentsAsync(filter);
-        var data = await ApplyDataFilters(catalogSpecParams, filter);
+        var data = await GetFilteredProductsAsync(catalogSpecParams, filter);
 
         return new Pagination<Product>(catalogSpecParams.PageIndex, catalogSpecParams.PageSize, totalCount, data);
     }
 
-    private async Task<IReadOnlyCollection<Product>> ApplyDataFilters(CatalogSpecParams catalogSpecParams, FilterDefinition<Product> filter)
+    private async Task<IReadOnlyList<Product>> GetFilteredProductsAsync(
+        CatalogSpecParams catalogSpecParams,
+        FilterDefinition<Product> filter,
+        CancellationToken cancellationToken = default)
     {
+        var pageIndex = Math.Max(1, catalogSpecParams.PageIndex);
+        var pageSize  = Math.Max(1, catalogSpecParams.PageSize);
+
+        var sortDefinition = catalogSpecParams.Sort switch
+        {
+            "priceDesc" => Builders<Product>.Sort.Descending(p => p.Price),
+            "priceAsc"  => Builders<Product>.Sort.Ascending(p => p.Price),
+            "nameDesc"  => Builders<Product>.Sort.Descending(p => p.Name),
+            _           => Builders<Product>.Sort.Ascending(p => p.Name),
+        };
+
         return await _products
             .Find(filter)
-            .Sort( catalogSpecParams.Sort switch
-            {
-                "priceDesc" => Builders<Product>.Sort.Descending(product => product.Price),
-                _ => Builders<Product>.Sort.Ascending(product => product.Name),
-            })
-            .Skip(catalogSpecParams.PageSize * (catalogSpecParams.PageIndex - 1))
-            .Limit(catalogSpecParams.PageSize)
-            .ToListAsync();
+            .Sort(sortDefinition)
+            .Skip(pageSize * (pageIndex - 1))
+            .Limit(pageSize)
+            .ToListAsync(cancellationToken);
     }
+
 
     public async Task<IEnumerable<Product>> GetProductsByNameAsync(string productName)
     {
